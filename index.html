@@ -286,6 +286,49 @@
       return order.indexOf(ka) - order.indexOf(kb);
     }
 
+    // 反応スタイル検知（極端・規則・低ばらつき）
+    function detectResponseStyle(values) {
+      const n = values.length;
+      const set = new Set(values);
+
+      // (1) 全て同じ
+      if (set.size === 1) {
+        return "同じ番号を選び続けています。正確な結果が出ない可能性があります。";
+      }
+
+      // (2) ばらつき（分散）が極端に小さい
+      const mean = sum(values) / n;
+      const variance = values.reduce((s,v)=>s+Math.pow(v-mean,2),0) / n;
+      if (variance < 0.15) {
+        return "選択にほとんどばらつきがありません。正確な結果が出ない可能性があります。";
+      }
+
+      // (3) 完全な単調列（1ずつ増減）
+      let monoStep1 = true;
+      let d = values[1] - values[0];
+      if (Math.abs(d) !== 1) monoStep1 = false;
+      for (let i=1; monoStep1 && i<n-1; i++) {
+        if (values[i+1] - values[i] !== d) monoStep1 = false;
+      }
+      if (monoStep1) {
+        return "1ずつ増減する規則的な選択が続いています。正確な結果が出ない可能性があります。";
+      }
+
+      // (4) 1..5..1 の“波形”に近いジグザグ（境界で反転しつつ常に±1刻み）
+      let zigzag = true;
+      for (let i=0; i<n-1; i++) {
+        const diff = values[i+1] - values[i];
+        if (Math.abs(diff) !== 1) { zigzag = false; break; }
+        // 1のときは次は+1、5のときは次は-1
+        if ((values[i] === 1 && diff !== 1) || (values[i] === 5 && diff !== -1)) { zigzag = false; break; }
+      }
+      if (zigzag) {
+        return "「1→2→3→4→5→4→…」のような規則的な選択が続いています。正確な結果が出ない可能性があります。";
+      }
+
+      return null; // 問題なし
+    }
+
     function calc() {
       // ===== 未回答チェック（DOMから動的にカウント） =====
       const TOTAL = document.querySelectorAll('.scale').length;
@@ -310,6 +353,20 @@
         return; // 中断
       }
       // ===== 未回答チェックここまで =====
+
+      // ===== 反応スタイル検知（ここで実行） =====
+      const values = [];
+      for (let q = 1; q <= TOTAL; q++) values.push(getValue(q));
+      const warn = detectResponseStyle(values);
+      if (warn) {
+        const proceed = confirm(`${warn}\n\nこのまま結果を表示しますか？（キャンセルで見直し）`);
+        if (!proceed) {
+          // 先頭にスクロールして見直しやすく
+          document.querySelector('.q')?.scrollIntoView({ behavior:'smooth', block:'start' });
+          return; // 中断
+        }
+      }
+      // ===== 検知ここまで =====
 
       // 集計
       const scores = {
