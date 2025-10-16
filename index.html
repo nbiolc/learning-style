@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>学び方タイプ診断（10問）</title>
+  <style>
+    :root { --maxw: 860px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif; line-height: 1.6; margin: 0; background: #fafafa; color: #222; }
+    header { background: #0ea5e9; color: white; padding: 18px 16px; }
+    header h1 { margin: 0 0 4px 0; font-size: 1.4rem; }
+    header p { margin: 0; opacity: 0.95; }
+    main { max-width: var(--maxw); margin: 20px auto; padding: 0 16px 32px; }
+    .card { background: white; border-radius: 14px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); padding: 18px; margin: 14px 0; }
+    .q { margin: 14px 0; padding: 12px 12px 6px; border: 1px solid #eee; border-radius: 12px; }
+    .q h3 { margin: 0 0 8px; font-size: 1rem; }
+    .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .opt { background:#f7f7f7; border-radius: 10px; padding: 8px; text-align: center; border: 1px solid #eee; }
+    .opt input { margin-right: 6px; }
+    .legend { font-size: .9rem; color:#555; display:flex; justify-content:space-between; margin-top:6px; }
+    button { appearance: none; border: none; background: #0ea5e9; color: white; padding: 12px 18px; border-radius: 12px; font-size: 1rem; cursor: pointer; box-shadow: 0 6px 14px rgba(14,165,233,.35); }
+    button:hover { filter: brightness(1.05); }
+    .results h2 { margin-top: 0; }
+    .grid { display:grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .bar { height: 12px; background:#e5f4fb; border-radius: 999px; overflow: hidden; border:1px solid #c7e7f7; }
+    .bar > span { display:block; height:100%; background:#0ea5e9; width:0%; transition: width .6s ease; }
+    .type { display:flex; align-items:center; justify-content:space-between; font-weight:600; }
+    .pill { font-size: .8rem; padding: 2px 8px; background:#eef7ff; border:1px solid #d8ecff; border-radius:999px; margin-left: 8px; }
+    .advice { font-size: .95rem; color:#333; margin-top:8px; }
+    footer { text-align:center; color:#666; font-size:.88rem; margin: 28px 0 40px; }
+    .notice { font-size:.92rem; color:#555; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>学び方タイプ診断（10問）</h1>
+    <p>各質問を1〜5で選び、「結果を見る」を押すと合計点と上位2タイプがわかります。</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>回答方法</h2>
+      <p class="notice">1 = まったくあてはまらない ／ 5 = とてもあてはまる</p>
+    </section>
+
+    <form id="quiz">
+      <section class="card">
+        <div class="q">
+          <h3>① わからないところは、納得できるまで自分で調べたり考えたりしたい。</h3>
+          <div class="scale" data-q="1">
+            <label class="opt"><input type="radio" name="q1" value="1">1</label>
+            <label class="opt"><input type="radio" name="q1" value="2">2</label>
+            <label class="opt"><input type="radio" name="q1" value="3">3</label>
+            <label class="opt"><input type="radio" name="q1" value="4">4</label>
+            <label class="opt"><input type="radio" name="q1" value="5">5</label>
+          </div>
+          <div class="legend"><span>1 まったく当てはまらない</span><span>5 とても当てはまる</span></div>
+        </div>
+
+        <div class="q">
+          <h3>② 友達や先生に「よくがんばってるね」と言われるとやる気が出る。</h3>
+          <div class="scale" data-q="2">
+            <label class="opt"><input type="radio" name="q2" value="1">1</label>
+            <label class="opt"><input type="radio" name="q2" value="2">2</label>
+            <label class="opt"><input type="radio" name="q2" value="3">3</label>
+            <label class="opt"><input type="radio" name="q2" value="4">4</label>
+            <label class="opt"><input type="radio" name="q2" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>③ 新しいことを試したり、自分のやり方で勉強してみるのが好きだ。</h3>
+          <div class="scale" data-q="3">
+            <label class="opt"><input type="radio" name="q3" value="1">1</label>
+            <label class="opt"><input type="radio" name="q3" value="2">2</label>
+            <label class="opt"><input type="radio" name="q3" value="3">3</label>
+            <label class="opt"><input type="radio" name="q3" value="4">4</label>
+            <label class="opt"><input type="radio" name="q3" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>④ 勉強の計画を立てると安心できる。</h3>
+          <div class="scale" data-q="4">
+            <label class="opt"><input type="radio" name="q4" value="1">1</label>
+            <label class="opt"><input type="radio" name="q4" value="2">2</label>
+            <label class="opt"><input type="radio" name="q4" value="3">3</label>
+            <label class="opt"><input type="radio" name="q4" value="4">4</label>
+            <label class="opt"><input type="radio" name="q4" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑤ ただ暗記するよりも、「どうしてそうなるのか」を知りたい。</h3>
+          <div class="scale" data-q="5">
+            <label class="opt"><input type="radio" name="q5" value="1">1</label>
+            <label class="opt"><input type="radio" name="q5" value="2">2</label>
+            <label class="opt"><input type="radio" name="q5" value="3">3</label>
+            <label class="opt"><input type="radio" name="q5" value="4">4</label>
+            <label class="opt"><input type="radio" name="q5" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑥ まわりの人の役に立てると、もっと頑張ろうと思える。</h3>
+          <div class="scale" data-q="6">
+            <label class="opt"><input type="radio" name="q6" value="1">1</label>
+            <label class="opt"><input type="radio" name="q6" value="2">2</label>
+            <label class="opt"><input type="radio" name="q6" value="3">3</label>
+            <label class="opt"><input type="radio" name="q6" value="4">4</label>
+            <label class="opt"><input type="radio" name="q6" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑦ 思いついたアイデアをどんどんメモしたり、形にしたりするのが得意。</h3>
+          <div class="scale" data-q="7">
+            <label class="opt"><input type="radio" name="q7" value="1">1</label>
+            <label class="opt"><input type="radio" name="q7" value="2">2</label>
+            <label class="opt"><input type="radio" name="q7" value="3">3</label>
+            <label class="opt"><input type="radio" name="q7" value="4">4</label>
+            <label class="opt"><input type="radio" name="q7" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑧ 同じ方法をくり返して少しずつ完成度を上げていくのが好きだ。</h3>
+          <div class="scale" data-q="8">
+            <label class="opt"><input type="radio" name="q8" value="1">1</label>
+            <label class="opt"><input type="radio" name="q8" value="2">2</label>
+            <label class="opt"><input type="radio" name="q8" value="3">3</label>
+            <label class="opt"><input type="radio" name="q8" value="4">4</label>
+            <label class="opt"><input type="radio" name="q8" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑨ 「これをやる意味」を理解してからじゃないとやる気が出ない。</h3>
+          <div class="scale" data-q="9">
+            <label class="opt"><input type="radio" name="q9" value="1">1</label>
+            <label class="opt"><input type="radio" name="q9" value="2">2</label>
+            <label class="opt"><input type="radio" name="q9" value="3">3</label>
+            <label class="opt"><input type="radio" name="q9" value="4">4</label>
+            <label class="opt"><input type="radio" name="q9" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div class="q">
+          <h3>⑩ 決めたことは途中で変えるより、最後までやり通したい。</h3>
+          <div class="scale" data-q="10">
+            <label class="opt"><input type="radio" name="q10" value="1">1</label>
+            <label class="opt"><input type="radio" name="q10" value="2">2</label>
+            <label class="opt"><input type="radio" name="q10" value="3">3</label>
+            <label class="opt"><input type="radio" name="q10" value="4">4</label>
+            <label class="opt"><input type="radio" name="q10" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;">
+          <button type="button" id="calcBtn">結果を見る</button>
+          <button type="reset" id="resetBtn" style="background:#94a3b8; box-shadow: 0 6px 14px rgba(148,163,184,.35);">リセット</button>
+        </div>
+      </section>
+    </form>
+
+    <section class="card results" id="results" style="display:none;">
+      <h2>診断結果</h2>
+      <div class="grid">
+        <div>
+          <div class="type">探究タイプ <span class="pill">理屈・理解・整理</span></div>
+          <div class="bar"><span id="bar-tankyu"></span></div>
+          <div class="advice" id="score-tankyu"></div>
+        </div>
+        <div>
+          <div class="type">協調タイプ <span class="pill">人・つながり・共感</span></div>
+          <div class="bar"><span id="bar-kyoucho"></span></div>
+          <div class="advice" id="score-kyoucho"></div>
+        </div>
+        <div>
+          <div class="type">創造タイプ <span class="pill">発想・柔軟・挑戦</span></div>
+          <div class="bar"><span id="bar-souzou"></span></div>
+          <div class="advice" id="score-souzou"></div>
+        </div>
+        <div>
+          <div class="type">計画タイプ <span class="pill">安定・積み上げ・継続</span></div>
+          <div class="bar"><span id="bar-keikaku"></span></div>
+          <div class="advice" id="score-keikaku"></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#f8fbff; border:1px solid #e5f1ff;">
+        <h3>あなたの上位2タイプ</h3>
+        <p id="top2"></p>
+        <ul id="quick-tips"></ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>この診断について</h3>
+      <p class="notice">このチェックは自己理解のための簡易ツールです。結果は目安として活用し、学び方を柔軟に調整してください。</p>
+    </section>
+    <footer>© 学び方タイプ診断</footer>
+  </main>
+
+  <script>
+    const mapping = {
+      tankyu: [1,5,9],   // 探究タイプ
+      kyoucho: [2,6],    // 協調タイプ
+      souzou: [3,7],     // 創造タイプ
+      keikaku: [4,8,10]  // 計画タイプ
+    };
+    const maxScores = { tankyu: 15, kyoucho: 10, souzou: 10, keikaku: 15 };
+
+    function getValue(q) {
+      const el = document.querySelector(`input[name="q${q}"]:checked`);
+      return el ? parseInt(el.value, 10) : 0;
+    }
+
+    function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
+
+    function calc() {
+      // collect scores
+      const scores = {
+        tankyu: sum(mapping.tankyu.map(getValue)),
+        kyoucho: sum(mapping.kyoucho.map(getValue)),
+        souzou: sum(mapping.souzou.map(getValue)),
+        keikaku: sum(mapping.keikaku.map(getValue))
+      };
+
+      // Update bars & labels
+      const pct = (v, max) => Math.round((v / max) * 100);
+      document.getElementById('bar-tankyu').style.width = pct(scores.tankyu, maxScores.tankyu) + '%';
+      document.getElementById('bar-kyoucho').style.width = pct(scores.kyoucho, maxScores.kyoucho) + '%';
+      document.getElementById('bar-souzou').style.width = pct(scores.souzou, maxScores.souzou) + '%';
+      document.getElementById('bar-keikaku').style.width = pct(scores.keikaku, maxScores.keikaku) + '%';
+
+      document.getElementById('score-tankyu').textContent = `合計 ${scores.tankyu} / ${maxScores.tankyu}`;
+      document.getElementById('score-kyoucho').textContent = `合計 ${scores.kyoucho} / ${maxScores.kyoucho}`;
+      document.getElementById('score-souzou').textContent = `合計 ${scores.souzou} / ${maxScores.souzou}`;
+      document.getElementById('score-keikaku').textContent = `合計 ${scores.keikaku} / ${maxScores.keikaku}`;
+
+      // Sort to get top 2
+      const entries = Object.entries(scores).sort((a,b)=> b[1]-a[1]);
+      const label = {
+        tankyu: "探究タイプ",
+        kyoucho: "協調タイプ",
+        souzou: "創造タイプ",
+        keikaku: "計画タイプ"
+      };
+      const top2 = entries.slice(0,2).map(([k,v]) => `${label[k]}（${v}点）`).join(" ／ ");
+      document.getElementById('top2').textContent = top2;
+
+      // Quick tips for top types
+      const tips = {
+        tankyu: "理由・つながりを先に掴むと効率UP。試験前は「因果・公式の導出・要点マップ」を最優先。",
+        kyoucho: "人に説明・教え合いで理解が定着。試験前は友達と要点クイズや口頭テストを。",
+        souzou: "図解・色分け・ストーリー化で記憶を強化。短時間×高密度の切替学習が効果的。",
+        keikaku: "ToDoと時間ブロックで着実に積み上げ。試験前は優先順位を決めて“やる/やらない”を明確に。"
+      };
+      const quick = document.getElementById('quick-tips');
+      quick.innerHTML = "";
+      entries.slice(0,2).forEach(([k]) => {
+        const li = document.createElement('li');
+        li.textContent = tips[k];
+        quick.appendChild(li);
+      });
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calc);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('results').style.display = 'none';
+      document.querySelectorAll('.bar > span').forEach(s=> s.style.width = '0%');
+    });
+  </script>
+</body>
+</html>
