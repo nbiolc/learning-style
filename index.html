@@ -282,22 +282,40 @@
     }
 
     function calc() {
-      // ▼ 未回答チェック（ここを追加）
-  const totalQuestions = 12; // 12問版
+      // ===== 未回答チェック（堅牢版） =====
+  // 現在の設問数をDOMから取得（.scale の数）
+  const TOTAL = document.querySelectorAll('.scale').length;
+
+  // 既存のエラー表示をクリア
+  document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+
+  // 未回答の設問番号を収集
   const missing = [];
-  for (let q = 1; q <= totalQuestions; q++) {
+  for (let q = 1; q <= TOTAL; q++) {
     if (!document.querySelector(`input[name="q${q}"]:checked`)) {
       missing.push(q);
     }
   }
-  if (missing.length) {
-    alert(`未回答の設問があります：${missing.join("、")}（各設問は1～5を選択）`);
-    // 先頭の未回答にスクロール
-    const first = document.querySelector(`[data-q="${missing[0]}"]`);
-    if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  if (missing.length > 0) {
+    // 最初の未回答を特定して目立たせ、スクロール
+    const firstName = `q${missing[0]}`;
+    const firstInput = document.querySelector(`input[name="${firstName}"]`);
+    const container = firstInput ? firstInput.closest('.q') : null;
+
+    if (container) {
+      container.classList.add('error');
+      // スクロール＆フォーカスで視認性UP
+      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Safari等対策でフォーカス付与
+      container.setAttribute('tabindex', '-1');
+      container.focus({ preventScroll: true });
+    }
+
+    alert(`未回答の設問があります：${missing.join('、')}（各設問は1～5を選択してください）`);
     return; // 計算を中断
   }
-      // ▲ ここまで
+  // ===== 未回答チェック ここまで =====
       
       // collect scores
       const scores = {
