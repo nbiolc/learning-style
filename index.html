@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>あなたの学び方のタイプを探ってみよう（10問）</title>
+  <title>あなたの学び方のタイプを探ってみよう（12問）</title>
   <style>
     :root { --maxw: 860px; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif; line-height: 1.6; margin: 0; background: #fafafa; color: #222; }
@@ -167,6 +166,32 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
+        <!-- 追加：協調タイプの補強 -->
+        <div class="q">
+          <h3>⑪ クラスメイトや友達と一緒に勉強すると、ひとりでやるよりも集中できる。</h3>
+          <div class="scale" data-q="11">
+            <label class="opt"><input type="radio" name="q11" value="1">1</label>
+            <label class="opt"><input type="radio" name="q11" value="2">2</label>
+            <label class="opt"><input type="radio" name="q11" value="3">3</label>
+            <label class="opt"><input type="radio" name="q11" value="4">4</label>
+            <label class="opt"><input type="radio" name="q11" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
+        <!-- 追加：創造タイプの補強 -->
+        <div class="q">
+          <h3>⑫ 興味をもったことは、予定を変えてでもすぐに試してみたくなる。</h3>
+          <div class="scale" data-q="12">
+            <label class="opt"><input type="radio" name="q12" value="1">1</label>
+            <label class="opt"><input type="radio" name="q12" value="2">2</label>
+            <label class="opt"><input type="radio" name="q12" value="3">3</label>
+            <label class="opt"><input type="radio" name="q12" value="4">4</label>
+            <label class="opt"><input type="radio" name="q12" value="5">5</label>
+          </div>
+          <div class="legend"><span>1</span><span>5</span></div>
+        </div>
+
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;">
           <button type="button" id="calcBtn">結果を見る</button>
           <button type="reset" id="resetBtn" style="background:#94a3b8; box-shadow: 0 6px 14px rgba(148,163,184,.35);">リセット</button>
@@ -203,6 +228,9 @@
         <h3>あなたの上位2タイプ</h3>
         <p id="top2"></p>
         <ul id="quick-tips"></ul>
+        <p class="notice" style="margin-top:8px;">
+          ※同点のときは、FFSの考え方にそって <b>「創造（拡散）より計画（保全）」</b>、<b>「探究（凝縮）より協調（受容）」</b> を優先して表示します。
+        </p>
       </div>
       <p class="notice"> あなたの結果には「上位２つのタイプ」が表示されます。</p>
       <p class="notice">どちらも今のあなたの学び方に関わっている大切な要素です。</p>
@@ -221,20 +249,39 @@
   </main>
 
   <script>
+    // 12問版マッピング：各タイプ3問ずつ（最大15点）
     const mapping = {
-      tankyu: [1,5,9],   // 探究タイプ
-      kyoucho: [2,6],    // 協調タイプ
-      souzou: [3,7],     // 創造タイプ
-      keikaku: [4,8,10]  // 計画タイプ
+      tankyu: [1,5,9],     // 探究タイプ（凝縮＋弁別の学習的表現）
+      kyoucho: [2,6,11],   // 協調タイプ（受容）
+      souzou: [3,7,12],    // 創造タイプ（拡散）
+      keikaku: [4,8,10]    // 計画タイプ（保全）
     };
-    const maxScores = { tankyu: 15, kyoucho: 10, souzou: 10, keikaku: 15 };
+    const maxScores = { tankyu: 15, kyoucho: 15, souzou: 15, keikaku: 15 };
 
     function getValue(q) {
       const el = document.querySelector(`input[name="q${q}"]:checked`);
       return el ? parseInt(el.value, 10) : 0;
     }
-
     function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
+
+    // FFS準拠の同点優先ルールを反映した比較関数
+    function compareTypes(a, b) {
+      const [ka, va] = a;
+      const [kb, vb] = b;
+      if (va !== vb) return vb - va; // 高得点を優先
+
+      // 同点時：拡散(創造) vs 保全(計画) → 保全(計画)を優先
+      if ((ka === 'souzou' && kb === 'keikaku')) return 1;
+      if ((ka === 'keikaku' && kb === 'souzou')) return -1;
+
+      // 同点時：凝縮(探究) vs 受容(協調) → 受容(協調)を優先
+      if ((ka === 'tankyu' && kb === 'kyoucho')) return 1;
+      if ((ka === 'kyoucho' && kb === 'tankyu')) return -1;
+
+      // それ以外の完全同点は順不同（安定した表示のため名前順で固定）
+      const order = ['kyoucho','tankyu','keikaku','souzou'];
+      return order.indexOf(ka) - order.indexOf(kb);
+    }
 
     function calc() {
       // collect scores
@@ -257,8 +304,9 @@
       document.getElementById('score-souzou').textContent = `合計 ${scores.souzou} / ${maxScores.souzou}`;
       document.getElementById('score-keikaku').textContent = `合計 ${scores.keikaku} / ${maxScores.keikaku}`;
 
-      // Sort to get top 2
-      const entries = Object.entries(scores).sort((a,b)=> b[1]-a[1]);
+      // Sort to get top 2 with FFS tie-break rule
+      const entries = Object.entries(scores).sort(compareTypes);
+
       const label = {
         tankyu: "探究タイプ",
         kyoucho: "協調タイプ",
