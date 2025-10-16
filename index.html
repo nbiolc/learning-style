@@ -54,9 +54,9 @@
     </section>
 
     <form id="quiz" novalidate>
-      <section class="card">
-        <!-- 12問：名称は q1〜q12 固定 -->
-        <div class="q">
+      <section class="card" id="questions">
+        <!-- data-type は固定。JSで並べ替え＆再採番 -->
+        <div class="q" data-type="tankyu">
           <h3>① わからないところは、納得できるまで自分で調べたり考えたりしたい。</h3>
           <div class="scale" data-q="1">
             <label class="opt"><input type="radio" name="q1" value="1">1</label>
@@ -68,7 +68,7 @@
           <div class="legend"><span>1 まったくあてはまらない</span><span>5 とてもあてはまる</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="kyoucho">
           <h3>② 友達や先生に「よくがんばってるね」と言われるとやる気が出る。</h3>
           <div class="scale" data-q="2">
             <label class="opt"><input type="radio" name="q2" value="1">1</label>
@@ -80,7 +80,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="souzou">
           <h3>③ 新しいことを試したり、自分のやり方で勉強してみるのが好きだ。</h3>
           <div class="scale" data-q="3">
             <label class="opt"><input type="radio" name="q3" value="1">1</label>
@@ -92,7 +92,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="keikaku">
           <h3>④ 勉強の計画を立てると安心できる。</h3>
           <div class="scale" data-q="4">
             <label class="opt"><input type="radio" name="q4" value="1">1</label>
@@ -104,7 +104,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="tankyu">
           <h3>⑤ ただ暗記するよりも、「どうしてそうなるのか」を知りたい。</h3>
           <div class="scale" data-q="5">
             <label class="opt"><input type="radio" name="q5" value="1">1</label>
@@ -116,7 +116,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="kyoucho">
           <h3>⑥ まわりの人の役に立てると、もっと頑張ろうと思える。</h3>
           <div class="scale" data-q="6">
             <label class="opt"><input type="radio" name="q6" value="1">1</label>
@@ -128,7 +128,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="souzou">
           <h3>⑦ 思いついたアイデアをどんどんメモしたり、形にしたりするのが得意。</h3>
           <div class="scale" data-q="7">
             <label class="opt"><input type="radio" name="q7" value="1">1</label>
@@ -140,7 +140,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="keikaku">
           <h3>⑧ 同じ方法をくり返して少しずつ完成度を上げていくのが好きだ。</h3>
           <div class="scale" data-q="8">
             <label class="opt"><input type="radio" name="q8" value="1">1</label>
@@ -152,7 +152,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="tankyu">
           <h3>⑨ 「これをやる意味」を理解してからじゃないとやる気が出ない。</h3>
           <div class="scale" data-q="9">
             <label class="opt"><input type="radio" name="q9" value="1">1</label>
@@ -164,7 +164,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <div class="q">
+        <div class="q" data-type="keikaku">
           <h3>⑩ 決めたことは途中で変えるより、最後までやり通したい。</h3>
           <div class="scale" data-q="10">
             <label class="opt"><input type="radio" name="q10" value="1">1</label>
@@ -176,8 +176,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <!-- 追加：協調タイプの補強 -->
-        <div class="q">
+        <div class="q" data-type="kyoucho">
           <h3>⑪ クラスメイトや友達と一緒に勉強すると、ひとりでやるよりも集中できる。</h3>
           <div class="scale" data-q="11">
             <label class="opt"><input type="radio" name="q11" value="1">1</label>
@@ -189,8 +188,7 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-        <!-- 追加：創造タイプの補強 -->
-        <div class="q">
+        <div class="q" data-type="souzou">
           <h3>⑫ 興味をもったことは、予定を変えてでもすぐに試してみたくなる。</h3>
           <div class="scale" data-q="12">
             <label class="opt"><input type="radio" name="q12" value="1">1</label>
@@ -243,6 +241,7 @@
       <div class="badges">
         <span class="pill">クッキーは使いません</span>
         <span class="pill">追跡しません</span>
+        <span class="pill">オフラインでも使えます</span>
       </div>
     </section>
 
@@ -256,22 +255,123 @@
   </main>
 
   <script>
-    // 12問：各タイプ3問ずつ（最大15点）
-    const mapping = {
-      tankyu: [1,5,9],     // 探究タイプ
-      kyoucho: [2,6,11],   // 協調タイプ
-      souzou: [3,7,12],    // 創造タイプ
-      keikaku: [4,8,10]    // 計画タイプ
-    };
+    // 丸数字 1..12
+    const circled = ["","①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫"];
+    const typeKeys = ["tankyu","kyoucho","souzou","keikaku"];
+    let mapping = {}; // {type: [qIndex, ...]} ← 並べ直し後に動的構築
     const maxScores = { tankyu: 15, kyoucho: 15, souzou: 15, keikaku: 15 };
 
-    function getValue(q) {
-      const el = document.querySelector(`input[name="q${q}"]:checked`);
+    function getValueByName(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
       return el ? parseInt(el.value, 10) : 0;
     }
     function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
+    function shuffleArray(a) { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-    // 同点優先
+    // === 制約付きランダム並べ替え（隣接同タイプなし） ===
+    function generateTypeSequence(counts, maxTries=50) {
+      // counts: {type: remainingCount}
+      const total = Object.values(counts).reduce((s,v)=>s+v,0);
+      for (let attempt=0; attempt<maxTries; attempt++) {
+        const left = {...counts};
+        const seq = [];
+        let prev = null;
+
+        for (let step=0; step<total; step++) {
+          // 候補 = 残数>0 && prevと異なる
+          const candidates = Object.entries(left).filter(([t,c]) => c>0 && t!==prev);
+          if (candidates.length === 0) { // 行き詰まり → この試行をやり直し
+            break;
+          }
+          // 残数に比例した重み付きランダム選択
+          const weightSum = candidates.reduce((s,[,c])=>s+c,0);
+          let r = Math.random() * weightSum;
+          let chosen = candidates[0][0];
+          for (const [t,c] of candidates) { r -= c; if (r <= 0) { chosen = t; break; } }
+
+          seq.push(chosen);
+          left[chosen]--;
+          prev = chosen;
+        }
+        if (seq.length === total) return seq; // 完成
+      }
+      // それでも失敗したらフォールバック（理論上ほぼ起きない）：
+      // ラウンドロビンで確実に生成
+      const types = Object.keys(counts);
+      const order = shuffleArray([...types]);
+      const seq = [];
+      let remain = {...counts};
+      let placed = true;
+      while (placed) {
+        placed = false;
+        for (const t of order) {
+          if (remain[t] > 0 && seq[seq.length-1] !== t) {
+            seq.push(t); remain[t]--; placed = true;
+          }
+        }
+      }
+      return seq;
+    }
+
+    function buildRandomOrder() {
+      const container = document.getElementById('questions');
+      const blocks = Array.from(container.querySelectorAll('.q'));
+
+      // タイプごとに収集して内部シャッフル
+      const byType = {
+        tankyu: blocks.filter(b => b.dataset.type === 'tankyu'),
+        kyoucho: blocks.filter(b => b.dataset.type === 'kyoucho'),
+        souzou:  blocks.filter(b => b.dataset.type === 'souzou'),
+        keikaku: blocks.filter(b => b.dataset.type === 'keikaku')
+      };
+      typeKeys.forEach(t => shuffleArray(byType[t]));
+
+      // 各タイプの残数を作成（ここでは各3問）
+      const counts = {};
+      typeKeys.forEach(t => counts[t] = byType[t].length);
+
+      // 制約付きランダムでタイプ列を作成
+      const typeSeq = generateTypeSequence(counts);
+
+      // そのタイプ列に従って質問DOMを並べる
+      const tail = container.querySelector('div[style*="display:flex"]'); // ボタン行
+      blocks.forEach(b => b.remove()); // いったん外す
+
+      // タイプごとの取り出し位置
+      const idxByType = { tankyu:0, kyoucho:0, souzou:0, keikaku:0 };
+      const newOrder = typeSeq.map(t => byType[t][idxByType[t]++]);
+
+      // 再採番（丸数字・data-q・radio name）＆挿入
+      newOrder.forEach((b, i) => {
+        const num = i + 1;
+        const h3 = b.querySelector('h3');
+        if (h3) h3.textContent = h3.textContent.replace(/^.\s*/, `${circled[num]} `);
+        const scale = b.querySelector('.scale');
+        if (scale) {
+          scale.dataset.q = String(num);
+          const radios = scale.querySelectorAll('input[type="radio"]');
+          radios.forEach(r => { r.name = `q${num}`; r.checked = false; });
+        }
+        container.insertBefore(b, tail);
+      });
+
+      // 動的マッピングを構築
+      mapping = { tankyu: [], kyoucho: [], souzou: [], keikaku: [] };
+      Array.from(container.querySelectorAll('.q')).forEach(q => {
+        const t = q.dataset.type;
+        const qnum = parseInt(q.querySelector('.scale').dataset.q, 10);
+        mapping[t].push(qnum);
+      });
+
+      // 表示・状態初期化
+      document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+      document.getElementById('results').style.display = 'none';
+      document.querySelectorAll('.bar > span').forEach(s=> s.style.width = '0%');
+      document.getElementById('top2').textContent = '';
+      document.getElementById('quick-tips').innerHTML = '';
+    }
+
+    // === FFSの同点優先 ===
     function compareTypes(a, b) {
       const [ka, va] = a;
       const [kb, vb] = b;
@@ -280,7 +380,6 @@
       if ((ka === 'keikaku' && kb === 'souzou')) return -1;
       if ((ka === 'tankyu' && kb === 'kyoucho')) return 1;
       if ((ka === 'kyoucho' && kb === 'tankyu')) return -1;
-      // 安定表示のための並び
       const order = ['kyoucho','tankyu','keikaku','souzou'];
       return order.indexOf(ka) - order.indexOf(kb);
     }
@@ -289,54 +388,33 @@
     function detectResponseStyle(values) {
       const n = values.length;
       const set = new Set(values);
-
-      // (1) 全て同じ
-      if (set.size === 1) {
-        return "同じ番号を選び続けています。正確な結果が出ない可能性があります。";
-      }
-
-      // (2) ばらつき（分散）が極端に小さい
+      if (set.size === 1) return "同じ番号を選び続けています。正確な結果が出ない可能性があります。";
       const mean = sum(values) / n;
       const variance = values.reduce((s,v)=>s+Math.pow(v-mean,2),0) / n;
-      if (variance < 0.15) {
-        return "選択にほとんどばらつきがありません。正確な結果が出ない可能性があります。";
-      }
-
-      // (3) 完全な単調列（1ずつ増減）
-      let monoStep1 = true;
-      let d = values[1] - values[0];
-      if (Math.abs(d) !== 1) monoStep1 = false;
-      for (let i=1; monoStep1 && i<n-1; i++) {
-        if (values[i+1] - values[i] !== d) monoStep1 = false;
-      }
-      if (monoStep1) {
-        return "1ずつ増減する規則的な選択が続いています。正確な結果が出ない可能性があります。";
-      }
-
-      // (4) 1..5..1 の“波形”に近いジグザグ（境界で反転しつつ常に±1刻み）
+      if (variance < 0.15) return "選択にほとんどばらつきがありません。正確な結果が出ない可能性があります。";
+      // ±1の単調列
+      let mono = Math.abs(values[1]-values[0])===1;
+      for (let i=1; mono && i<n-1; i++) if (values[i+1]-values[i] !== (values[1]-values[0])) mono=false;
+      if (mono) return "1ずつ増減する規則的な選択が続いています。正確な結果が出ない可能性があります。";
+      // 1..5..1 のジグザグ
       let zigzag = true;
       for (let i=0; i<n-1; i++) {
-        const diff = values[i+1] - values[i];
-        if (Math.abs(diff) !== 1) { zigzag = false; break; }
-        // 1のときは次は+1、5のときは次は-1
-        if ((values[i] === 1 && diff !== 1) || (values[i] === 5 && diff !== -1)) { zigzag = false; break; }
+        const diff = values[i+1]-values[i];
+        if (Math.abs(diff)!==1) { zigzag=false; break; }
+        if ((values[i]===1 && diff!==1) || (values[i]===5 && diff!==-1)) { zigzag=false; break; }
       }
-      if (zigzag) {
-        return "「1→2→3→4→5→4→…」のような規則的な選択が続いています。正確な結果が出ない可能性があります。";
-      }
-
-      return null; // 問題なし
+      if (zigzag) return "「1→2→3→4→5→4→…」のような規則的な選択が続いています。正確な結果が出ない可能性があります。";
+      return null;
     }
 
     function calc() {
-      // ===== 未回答チェック（DOMから動的にカウント） =====
       const TOTAL = document.querySelectorAll('.scale').length;
       document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+
+      // 未回答チェック
       const missing = [];
       for (let q = 1; q <= TOTAL; q++) {
-        if (!document.querySelector(`input[name="q${q}"]:checked`)) {
-          missing.push(q);
-        }
+        if (!document.querySelector(`input[name="q${q}"]:checked`)) missing.push(q);
       }
       if (missing.length > 0) {
         const firstName = `q${missing[0]}`;
@@ -349,51 +427,43 @@
           container.focus({ preventScroll: true });
         }
         alert(`未回答の設問があります：${missing.join('、')}（各設問は1～5を選択してください）`);
-        return; // 中断
+        return;
       }
-      // ===== 未回答チェックここまで =====
 
-      // ===== 反応スタイル検知（ここで実行） =====
+      // 反応スタイル検知
       const values = [];
-      for (let q = 1; q <= TOTAL; q++) values.push(getValue(q));
+      for (let q = 1; q <= TOTAL; q++) values.push(getValueByName(`q${q}`));
       const warn = detectResponseStyle(values);
       if (warn) {
         const proceed = confirm(`${warn}\n\nこのまま結果を表示しますか？（キャンセルで見直し）`);
-        if (!proceed) {
-          // 先頭にスクロールして見直しやすく
-          document.querySelector('.q')?.scrollIntoView({ behavior:'smooth', block:'start' });
-          return; // 中断
-        }
+        if (!proceed) { document.querySelector('.q')?.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
       }
-      // ===== 検知ここまで =====
 
-      // 集計
-      const scores = {
-        tankyu: sum(mapping.tankyu.map(getValue)),
-        kyoucho: sum(mapping.kyoucho.map(getValue)),
-        souzou: sum(mapping.souzou.map(getValue)),
-        keikaku: sum(mapping.keikaku.map(getValue))
-      };
+      // 集計（動的マッピング）
+      const scores = {};
+      for (const t of typeKeys) {
+        scores[t] = sum((mapping[t]||[]).map(n => getValueByName(`q${n}`)));
+      }
 
       // 表示更新
-      const pct = (v, max) => Math.round((v / max) * 100);
+      const pct = (v, m) => Math.round((v / m) * 100);
       document.getElementById('bar-tankyu').style.width = pct(scores.tankyu, maxScores.tankyu) + '%';
       document.getElementById('bar-kyoucho').style.width = pct(scores.kyoucho, maxScores.kyoucho) + '%';
       document.getElementById('bar-souzou').style.width = pct(scores.souzou, maxScores.souzou) + '%';
       document.getElementById('bar-keikaku').style.width = pct(scores.keikaku, maxScores.keikaku) + '%';
 
-      document.getElementById('score-tankyu').textContent = `合計 ${scores.tankyu} / ${maxScores.tankyu}`;
+      document.getElementById('score-tankyu').textContent  = `合計 ${scores.tankyu} / ${maxScores.tankyu}`;
       document.getElementById('score-kyoucho').textContent = `合計 ${scores.kyoucho} / ${maxScores.kyoucho}`;
-      document.getElementById('score-souzou').textContent = `合計 ${scores.souzou} / ${maxScores.souzou}`;
+      document.getElementById('score-souzou').textContent  = `合計 ${scores.souzou} / ${maxScores.souzou}`;
       document.getElementById('score-keikaku').textContent = `合計 ${scores.keikaku} / ${maxScores.keikaku}`;
 
-      // 上位2タイプ
+      // 上位2タイプ（FFSタイブレーク適用）
       const entries = Object.entries(scores).sort(compareTypes);
       const label = { tankyu: "探究タイプ", kyoucho: "協調タイプ", souzou: "創造タイプ", keikaku: "計画タイプ" };
       const top2 = entries.slice(0,2).map(([k,v]) => `${label[k]}（${v}点）`).join(" ／ ");
       document.getElementById('top2').textContent = top2;
 
-      // タイプ別クイックTips
+      // クイックTips
       const tips = {
         tankyu: "探究タイプ（理解・整理・因果で考える人）； まず“なぜそうなるのか”を理解してから覚えると定着が早まります。試験前は、公式や重要語を“理由の流れ”とセットで整理するのがベスト。",
         kyoucho: "協調タイプ（人・つながり・共感で伸びる人）； 誰かに説明すると理解が深まります。試験前は、友達に要点を教えたり、声に出して説明してみよう。言葉にすることで記憶・定着が向上します。",
@@ -412,14 +482,11 @@
       document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // ボタンイベント
+    // 初期化：ロード時に並べ替え、リセット時も並べ替え
+    window.addEventListener('DOMContentLoaded', buildRandomOrder);
     document.getElementById('calcBtn').addEventListener('click', calc);
     document.getElementById('resetBtn').addEventListener('click', () => {
-      document.getElementById('results').style.display = 'none';
-      document.querySelectorAll('.bar > span').forEach(s=> s.style.width = '0%');
-      document.getElementById('top2').textContent = '';
-      document.getElementById('quick-tips').innerHTML = '';
-      document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+      buildRandomOrder();
     });
   </script>
 </body>
