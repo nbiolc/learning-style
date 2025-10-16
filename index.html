@@ -282,7 +282,7 @@
     }
 
     function calc() {
-      // ===== 未回答チェック（堅牢版） =====
+  // ===== 未回答チェック（堅牢版） =====
   // 現在の設問数をDOMから取得（.scale の数）
   const TOTAL = document.querySelectorAll('.scale').length;
 
@@ -316,15 +316,16 @@
     return; // 計算を中断
   }
   // ===== 未回答チェック ここまで =====
-      
-      // collect scores
-      const scores = {
-        tankyu: sum(mapping.tankyu.map(getValue)),
-        kyoucho: sum(mapping.kyoucho.map(getValue)),
-        souzou: sum(mapping.souzou.map(getValue)),
-        keikaku: sum(mapping.keikaku.map(getValue))
-      };
 
+  // （以下は既存の計算処理のまま）
+  const scores = {
+    tankyu: sum(mapping.tankyu.map(getValue)),
+    kyoucho: sum(mapping.kyoucho.map(getValue)),
+    souzou: sum(mapping.souzou.map(getValue)),
+    keikaku: sum(mapping.keikaku.map(getValue))
+  };
+  // ...以降は元のコードのまま
+}
       // Update bars & labels
       const pct = (v, max) => Math.round((v / max) * 100);
       document.getElementById('bar-tankyu').style.width = pct(scores.tankyu, maxScores.tankyu) + '%';
