@@ -235,22 +235,21 @@
       </div>
 
       <div class="card" style="background:#f8fbff; border:1px solid #e5f1ff;">
-        <h3>あなたの上位2タイプ</h3>
+        <h3>あなたの特徴に合う学び方：上位2タイプ</h3>
         <p id="top2"></p>
         <ul id="quick-tips"></ul>
        </div>
 
       <div class="badges">
-        <span class="pill">No Cookies</span>
-        <span class="pill">No Tracking</span>
-        <span class="pill">Offline OK</span>
+        <span class="pill">クッキーは使いません</span>
+        <span class="pill">追跡しません</span>
       </div>
     </section>
 
     <section class="card">
-      <h3>この診断のプライバシーについて</h3>
+      <h3>結果のプライバシーについて</h3>
       <p class="notice">入力はすべてブラウザ内で処理され、サーバに送信・保存されません。外部解析タグ・広告タグは使用していません。ページを保存すればオフラインでも動作します。</p>
-      <h3>結果について</h3>
+      <h3>結果の内容について</h3>
       <p class="notice">これは、今のあなたの“学び方の傾向”を知るための簡単なチェックです。人は経験や環境によって少しずつ変わっていくもの。結果にとらわれすぎず、今の自分に合う方法を見つけるヒントとして活用してください。</p>
     </section>
     <footer>長浜バイオ大学 学習支援センター</footer>
@@ -388,7 +387,7 @@
       document.getElementById('score-souzou').textContent = `合計 ${scores.souzou} / ${maxScores.souzou}`;
       document.getElementById('score-keikaku').textContent = `合計 ${scores.keikaku} / ${maxScores.keikaku}`;
 
-      // 上位2タイプ（FFSタイブレーク適用）
+      // 上位2タイプ
       const entries = Object.entries(scores).sort(compareTypes);
       const label = { tankyu: "探究タイプ", kyoucho: "協調タイプ", souzou: "創造タイプ", keikaku: "計画タイプ" };
       const top2 = entries.slice(0,2).map(([k,v]) => `${label[k]}（${v}点）`).join(" ／ ");
