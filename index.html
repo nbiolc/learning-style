@@ -2,11 +2,12 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <!-- インラインJSを許可（'unsafe-inline'）しつつ、外部通信は禁止 -->
   <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';
-               script-src 'self'; connect-src 'none'; frame-ancestors 'self';">
+        content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';
+                 script-src 'self' 'unsafe-inline'; connect-src 'none'; frame-ancestors 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>あなたの学び方のタイプを探ってみよう！</title>
+  <title>あなたの学び方のタイプを探ってみよう！（12問）</title>
   <style>
     :root { --maxw: 860px; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif; line-height: 1.6; margin: 0; background: #fafafa; color: #222; }
@@ -18,11 +19,12 @@
     .q { margin: 14px 0; padding: 12px 12px 6px; border: 1px solid #eee; border-radius: 12px; }
     .q h3 { margin: 0 0 8px; font-size: 1rem; }
     .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .opt { background:#f7f7f7; border-radius: 10px; padding: 8px; text-align: center; border: 1px solid #eee; }
+    .opt { background:#f7f7f7; border-radius: 10px; padding: 8px; text-align: center; border: 1px solid #eee; cursor: pointer; }
     .opt input { margin-right: 6px; }
     .legend { font-size: .9rem; color:#555; display:flex; justify-content:space-between; margin-top:6px; }
     button { appearance: none; border: none; background: #0ea5e9; color: white; padding: 12px 18px; border-radius: 12px; font-size: 1rem; cursor: pointer; box-shadow: 0 6px 14px rgba(14,165,233,.35); }
     button:hover { filter: brightness(1.05); }
+    .muted { background:#94a3b8; box-shadow: 0 6px 14px rgba(148,163,184,.35); }
     .results h2 { margin-top: 0; }
     .grid { display:grid; grid-template-columns: 1fr; gap: 14px; }
     @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
@@ -33,21 +35,27 @@
     .advice { font-size: .95rem; color:#333; margin-top:8px; }
     footer { text-align:center; color:#666; font-size:.88rem; margin: 28px 0 40px; }
     .notice { font-size:.92rem; color:#555; }
+    /* 未回答の可視化 */
+    .q.error { border-color:#ef4444; background:#fff7f7; box-shadow:0 0 0 2px rgba(239,68,68,.15) inset; }
+    /* バッジ */
+    .badges .pill { margin-right:8px; }
   </style>
 </head>
 <body>
   <header>
     <h1>あなたの学び方のタイプは？</h1>
-    <p>下の各質問を1〜5で選び、「結果を見る」を押すと合計点と上位2タイプがわかります。</p>
+    <p>各質問を1〜5で選び、「結果を見る」を押すと合計点と上位2タイプがわかります。</p>
   </header>
   <main>
     <section class="card">
       <h2>回答方法</h2>
-      <p class="notice">1 = まったくあてはまらない ～ 5 = とてもあてはまる</p>
+      <p class="notice">1 = まったくあてはまらない ／ 5 = とてもあてはまる</p>
+      <p class="notice">（目安：同意度が 0–20%なら「1」、20–40%「2」、40–60%「3」、60–80%「4」、80–100%「5」）</p>
     </section>
 
-    <form id="quiz">
+    <form id="quiz" novalidate>
       <section class="card">
+        <!-- 12問：名称は q1〜q12 固定 -->
         <div class="q">
           <h3>① わからないところは、納得できるまで自分で調べたり考えたりしたい。</h3>
           <div class="scale" data-q="1">
@@ -168,7 +176,8 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-         <div class="q">
+        <!-- 追加：協調タイプの補強 -->
+        <div class="q">
           <h3>⑪ クラスメイトや友達と一緒に勉強すると、ひとりでやるよりも集中できる。</h3>
           <div class="scale" data-q="11">
             <label class="opt"><input type="radio" name="q11" value="1">1</label>
@@ -180,7 +189,8 @@
           <div class="legend"><span>1</span><span>5</span></div>
         </div>
 
-         <div class="q">
+        <!-- 追加：創造タイプの補強 -->
+        <div class="q">
           <h3>⑫ 興味をもったことは、予定を変えてでもすぐに試してみたくなる。</h3>
           <div class="scale" data-q="12">
             <label class="opt"><input type="radio" name="q12" value="1">1</label>
@@ -193,33 +203,33 @@
         </div>
 
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;">
-          <button type="button" id="calcBtn">結果を見る</button>
-          <button type="reset" id="resetBtn" style="background:#94a3b8; box-shadow: 0 6px 14px rgba(148,163,184,.35);">リセット</button>
+          <button type="button" id="calcBtn" aria-label="結果を表示">結果を見る</button>
+          <button type="reset" id="resetBtn" class="muted" aria-label="リセット">リセット</button>
         </div>
       </section>
     </form>
 
-    <section class="card results" id="results" style="display:none;">
+    <section class="card results" id="results" style="display:none;" aria-live="polite">
       <h2>結果</h2>
       <div class="grid">
         <div>
           <div class="type">探究タイプ <span class="pill">理屈・理解・整理</span></div>
-          <div class="bar"><span id="bar-tankyu"></span></div>
+          <div class="bar" aria-hidden="true"><span id="bar-tankyu"></span></div>
           <div class="advice" id="score-tankyu"></div>
         </div>
         <div>
           <div class="type">協調タイプ <span class="pill">人・つながり・共感</span></div>
-          <div class="bar"><span id="bar-kyoucho"></span></div>
+          <div class="bar" aria-hidden="true"><span id="bar-kyoucho"></span></div>
           <div class="advice" id="score-kyoucho"></div>
         </div>
         <div>
           <div class="type">創造タイプ <span class="pill">発想・柔軟・挑戦</span></div>
-          <div class="bar"><span id="bar-souzou"></span></div>
+          <div class="bar" aria-hidden="true"><span id="bar-souzou"></span></div>
           <div class="advice" id="score-souzou"></div>
         </div>
         <div>
           <div class="type">計画タイプ <span class="pill">安定・積み上げ・継続</span></div>
-          <div class="bar"><span id="bar-keikaku"></span></div>
+          <div class="bar" aria-hidden="true"><span id="bar-keikaku"></span></div>
           <div class="advice" id="score-keikaku"></div>
         </div>
       </div>
@@ -228,20 +238,20 @@
         <h3>あなたの上位2タイプ</h3>
         <p id="top2"></p>
         <ul id="quick-tips"></ul>
+       </div>
+
+      <div class="badges">
+        <span class="pill">No Cookies</span>
+        <span class="pill">No Tracking</span>
+        <span class="pill">Offline OK</span>
       </div>
-      <p class="notice"> あなたの結果には「上位２つのタイプ」が表示されます。</p>
-      <p class="notice">どちらも今のあなたの学び方に関わっている大切な要素です。</p>
-      <p class="notice">人はひとつの型だけでできているわけではありません。</p>
-      <p class="notice">たとえば「探究タイプ×計画タイプ」なら、考えて整理する力＋コツコツ続ける力をあわせ持っています。</p>
-      <p class="notice">自分の強みを組み合わせて、“自分らしい勉強法”を作っていくヒントにしてください。</p>
     </section>
 
     <section class="card">
-      <h3>結果のプライバシーについて</h3>
-  <p class="notice">入力された内容はすべてブラウザ内で処理され、サーバに送信・保存されません。また、外部解析タグ・広告タグも使用していません。</p>
-  <p class="notice">
+      <h3>この診断のプライバシーについて</h3>
+      <p class="notice">入力はすべてブラウザ内で処理され、サーバに送信・保存されません。外部解析タグ・広告タグは使用していません。ページを保存すればオフラインでも動作します。</p>
       <h3>結果について</h3>
-      <p class="notice">これは、今のあなたの“学び方の傾向”を知るための簡単なチェックです。人は経験や環境によって少しずつ変わっていくものです。結果にとらわれすぎず、今の自分に合う方法を見つけるヒントとして活用してください。</p>
+      <p class="notice">これは、今のあなたの“学び方の傾向”を知るための簡単なチェックです。人は経験や環境によって少しずつ変わっていくもの。結果にとらわれすぎず、今の自分に合う方法を見つけるヒントとして活用してください。</p>
     </section>
     <footer>長浜バイオ大学 学習支援センター</footer>
   </main>
@@ -262,71 +272,54 @@
     }
     function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
 
-    // 同点優先ルールを反映した比較関数
+    // 同点優先
     function compareTypes(a, b) {
       const [ka, va] = a;
       const [kb, vb] = b;
-      if (va !== vb) return vb - va; // 高得点を優先
-
-      // 同点時：創造 vs 計画 → 計画を優先
+      if (va !== vb) return vb - va; // 高得点優先
       if ((ka === 'souzou' && kb === 'keikaku')) return 1;
       if ((ka === 'keikaku' && kb === 'souzou')) return -1;
-
-      // 同点時：探究 vs 協調 → 協調を優先
       if ((ka === 'tankyu' && kb === 'kyoucho')) return 1;
       if ((ka === 'kyoucho' && kb === 'tankyu')) return -1;
-
-      // それ以外の完全同点は順不同（安定した表示のため名前順で固定）
+      // 安定表示のための並び
       const order = ['kyoucho','tankyu','keikaku','souzou'];
       return order.indexOf(ka) - order.indexOf(kb);
     }
 
     function calc() {
-  // ===== 未回答チェック（堅牢版） =====
-  // 現在の設問数をDOMから取得（.scale の数）
-  const TOTAL = document.querySelectorAll('.scale').length;
+      // ===== 未回答チェック（DOMから動的にカウント） =====
+      const TOTAL = document.querySelectorAll('.scale').length;
+      document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+      const missing = [];
+      for (let q = 1; q <= TOTAL; q++) {
+        if (!document.querySelector(`input[name="q${q}"]:checked`)) {
+          missing.push(q);
+        }
+      }
+      if (missing.length > 0) {
+        const firstName = `q${missing[0]}`;
+        const firstInput = document.querySelector(`input[name="${firstName}"]`);
+        const container = firstInput ? firstInput.closest('.q') : null;
+        if (container) {
+          container.classList.add('error');
+          container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          container.setAttribute('tabindex', '-1');
+          container.focus({ preventScroll: true });
+        }
+        alert(`未回答の設問があります：${missing.join('、')}（各設問は1～5を選択してください）`);
+        return; // 中断
+      }
+      // ===== 未回答チェックここまで =====
 
-  // 既存のエラー表示をクリア
-  document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
+      // 集計
+      const scores = {
+        tankyu: sum(mapping.tankyu.map(getValue)),
+        kyoucho: sum(mapping.kyoucho.map(getValue)),
+        souzou: sum(mapping.souzou.map(getValue)),
+        keikaku: sum(mapping.keikaku.map(getValue))
+      };
 
-  // 未回答の設問番号を収集
-  const missing = [];
-  for (let q = 1; q <= TOTAL; q++) {
-    if (!document.querySelector(`input[name="q${q}"]:checked`)) {
-      missing.push(q);
-    }
-  }
-
-  if (missing.length > 0) {
-    // 最初の未回答を特定して目立たせ、スクロール
-    const firstName = `q${missing[0]}`;
-    const firstInput = document.querySelector(`input[name="${firstName}"]`);
-    const container = firstInput ? firstInput.closest('.q') : null;
-
-    if (container) {
-      container.classList.add('error');
-      // スクロール＆フォーカスで視認性UP
-      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Safari等対策でフォーカス付与
-      container.setAttribute('tabindex', '-1');
-      container.focus({ preventScroll: true });
-    }
-
-    alert(`未回答の設問があります：${missing.join('、')}（各設問は1～5を選択してください）`);
-    return; // 計算を中断
-  }
-  // ===== 未回答チェック ここまで =====
-
-  // （以下は既存の計算処理のまま）
-  const scores = {
-    tankyu: sum(mapping.tankyu.map(getValue)),
-    kyoucho: sum(mapping.kyoucho.map(getValue)),
-    souzou: sum(mapping.souzou.map(getValue)),
-    keikaku: sum(mapping.keikaku.map(getValue))
-  };
-  // ...以降は元のコードのまま
-}
-      // Update bars & labels
+      // 表示更新
       const pct = (v, max) => Math.round((v / max) * 100);
       document.getElementById('bar-tankyu').style.width = pct(scores.tankyu, maxScores.tankyu) + '%';
       document.getElementById('bar-kyoucho').style.width = pct(scores.kyoucho, maxScores.kyoucho) + '%';
@@ -338,24 +331,18 @@
       document.getElementById('score-souzou').textContent = `合計 ${scores.souzou} / ${maxScores.souzou}`;
       document.getElementById('score-keikaku').textContent = `合計 ${scores.keikaku} / ${maxScores.keikaku}`;
 
-      // Sort to get top 2 with FFS tie-break rule
+      // 上位2タイプ（FFSタイブレーク適用）
       const entries = Object.entries(scores).sort(compareTypes);
-
-      const label = {
-        tankyu: "探究タイプ",
-        kyoucho: "協調タイプ",
-        souzou: "創造タイプ",
-        keikaku: "計画タイプ"
-      };
+      const label = { tankyu: "探究タイプ", kyoucho: "協調タイプ", souzou: "創造タイプ", keikaku: "計画タイプ" };
       const top2 = entries.slice(0,2).map(([k,v]) => `${label[k]}（${v}点）`).join(" ／ ");
       document.getElementById('top2').textContent = top2;
 
-      // Quick tips for top types
+      // タイプ別クイックTips
       const tips = {
-        tankyu: "探究タイプ（理解・整理・因果で考える人）；　まず“なぜそうなるのか”を理解してから覚えると定着が早まります。試験前は、公式や重要語を“理由の流れ”とセットで整理するのがベスト。",
-        kyoucho: "協調タイプ（人・つながり・共感で伸びる人）；　誰かに説明すると理解が深まります。試験前は、友達に要点を教えたり、声に出して説明してみよう。言葉にすることで記憶・定着が向上します。",
-        souzou: "創造タイプ（発想・柔軟・感覚で覚える人）；　イメージで覚えるのが得意。試験前は、図・色・ストーリーで内容を自分なりに再構成してみよう。1時間よりも20分×3回の方が集中できます。",
-        keikaku: "計画タイプ（安定・積み上げ・着実に進める人）；　計画を立てて進めると安心できるタイプ。試験前は、まず“残り時間でできることリスト”を作り、今日やる・明日やるを分けて整理しよう。"
+        tankyu: "探究タイプ（理解・整理・因果で考える人）； まず“なぜそうなるのか”を理解してから覚えると定着が早まります。試験前は、公式や重要語を“理由の流れ”とセットで整理するのがベスト。",
+        kyoucho: "協調タイプ（人・つながり・共感で伸びる人）； 誰かに説明すると理解が深まります。試験前は、友達に要点を教えたり、声に出して説明してみよう。言葉にすることで記憶・定着が向上します。",
+        souzou: "創造タイプ（発想・柔軟・感覚で覚える人）； イメージで覚えるのが得意。試験前は、図・色・ストーリーで内容を自分なりに再構成してみよう。1時間よりも20分×3回の方が集中できます。",
+        keikaku: "計画タイプ（安定・積み上げ・着実に進める人）； 計画を立てて進めると安心できるタイプ。試験前は、まず“残り時間でできることリスト”を作り、今日やる・明日やるを分けて整理しよう。"
       };
       const quick = document.getElementById('quick-tips');
       quick.innerHTML = "";
@@ -369,10 +356,14 @@
       document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 
+    // ボタンイベント
     document.getElementById('calcBtn').addEventListener('click', calc);
     document.getElementById('resetBtn').addEventListener('click', () => {
       document.getElementById('results').style.display = 'none';
       document.querySelectorAll('.bar > span').forEach(s=> s.style.width = '0%');
+      document.getElementById('top2').textContent = '';
+      document.getElementById('quick-tips').innerHTML = '';
+      document.querySelectorAll('.q.error').forEach(el => el.classList.remove('error'));
     });
   </script>
 </body>
